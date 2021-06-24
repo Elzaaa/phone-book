@@ -27,7 +27,7 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-
+//тригеры действий на панели управления: добавления, удаления и возврата к начальному состоянию записной книжки
 void MainWindow::on_actionAdd_triggered()
 {
     AddDialog d(this);
@@ -35,16 +35,50 @@ void MainWindow::on_actionAdd_triggered()
     {
         return;
     }
-    //auto user = d.getUser();
-    addUser(d.getUser());
+    auto user = d.getUser();
+    auto date = QDateTime::currentDateTime().date();
+    user.setDay(QString("%1.%2.%3").arg(date.day(), 2, 10, QLatin1Char('0')).arg(date.month(), 2, 10, QLatin1Char('0')).arg(date.year(), 4, 10, QLatin1Char('0')));
+    addUser(user);
 }
-
 
 void MainWindow::on_actionDelete_triggered()
 {
     ui->tableWidget->removeRow(ui->tableWidget->currentRow());
 }
 
+void MainWindow::on_actionReturn_triggered()
+{
+    if(sLastOpenProdject.isEmpty())
+    {
+        return;
+    }
+    QFile file(sLastOpenProdject);
+    if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        QMessageBox::critical(this, "Error", file.errorString());
+        return;
+    }
+    //сохраняем путь до файла с начальным состоянием записной книжки
+    openFile(&file);
+}
+
+//обработка собыйтий действий при нажатии на кнопки
+void MainWindow::on_AddButton_clicked()
+{
+    on_actionAdd_triggered();
+}
+
+void MainWindow::on_DeleteButton_clicked()
+{
+    on_actionDelete_triggered();
+}
+
+void MainWindow::on_ReturnButton_clicked()
+{
+    on_actionReturn_triggered();
+}
+
+//добавление пользователя в телефонную книгу
 void MainWindow::addUser(const User &user)
 {
     const int row = ui->tableWidget->rowCount();
@@ -57,39 +91,7 @@ void MainWindow::addUser(const User &user)
     ui->tableWidget->setItem(row, DAY, new QTableWidgetItem(user.getDay()));
 }
 
-
-void MainWindow::on_actionOpen_triggered()
-{
-    auto filename = QFileDialog::getOpenFileName(this, "Open", QDir::rootPath(), "XML file (*.xml)");
-    if(filename.isEmpty())
-    {
-        return;
-    }
-    QFile file(filename);
-    if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
-    {
-        QMessageBox::critical(this, "Error", file.errorString());
-        return;
-    }
-    QDomDocument doc;
-    doc.setContent(&file);
-    file.close();
-    auto root = doc.firstChild().toElement();
-    auto ix = doc.firstChild().toElement();
-    while (!ix.isNull())
-    {
-        auto id = ix.attribute("id");
-        auto fio = ix.firstChild().toElement().text();
-        auto email = ix.firstChild().nextSibling().toElement().text();
-        auto number = ix.firstChild().nextSibling().nextSibling().toElement().text();
-        auto bday = ix.firstChild().nextSibling().nextSibling().nextSibling().toElement().text();
-        auto day = ix.firstChild().nextSibling().nextSibling().nextSibling().nextSibling().toElement().text();
-        addUser(User(id, fio, email, number, bday, day));
-        ix = ix.nextSibling().toElement();
-    }
-}
-
-
+//сохранение пользователей из таблицы в xml файл
 void MainWindow::on_actionSave_as_triggered()
 {
     auto filename = QFileDialog::getSaveFileName(this, "Save as", QDir::rootPath(), "XML file (*.xml)");
@@ -109,6 +111,7 @@ void MainWindow::on_actionSave_as_triggered()
         auto eUser = doc.createElement("user");
         eUser.setAttribute("id",user.getId());
 
+        //создаем поля для xml файла
         auto eFio = doc.createElement("fio");
         auto eEmail = doc.createElement("email");
         auto eNumber = doc.createElement("number");
@@ -141,7 +144,50 @@ void MainWindow::on_actionSave_as_triggered()
     file.close();
 
 }
+//Открытие данных о пользователях в xml
+void MainWindow::openFile(QFile *file)
+{
+    ui->tableWidget->setRowCount( 0);
+    QDomDocument doc;
+    doc.setContent(file);
+    file->close();
+    auto root = doc.firstChild().toElement();
+    auto ix = root.firstChild().toElement();
+    //пока не дойдем до завершающего "родительсткого элемента" будем вытаскивать значения
+    while (!ix.isNull())
+    {
+        auto id = ix.attribute("id");
+        auto fio = ix.firstChild().toElement().text();
+        auto email = ix.firstChild().nextSibling().toElement().text();
+        auto number = ix.firstChild().nextSibling().nextSibling().toElement().text();
+        auto bday = ix.firstChild().nextSibling().nextSibling().nextSibling().toElement().text();
+        auto day = ix.firstChild().nextSibling().nextSibling().nextSibling().nextSibling().toElement().text();     
+        addUser(User(id, fio, email, number, bday, day));
+        ix = ix.nextSibling().toElement();
 
+    }
+}
+
+//Сохраняем новые данные
+void MainWindow::on_actionOpen_triggered()
+{
+
+    auto filename = QFileDialog::getOpenFileName(this, "Open", QDir::rootPath(), "XML file (*.xml)");
+    if(filename.isEmpty())
+    {
+        return;
+    }
+    QFile file(filename);
+    if(!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        QMessageBox::critical(this, "Error", file.errorString());
+        return;
+    }
+
+    openFile(&file);
+
+    sLastOpenProdject = filename;
+}
 
 void MainWindow::on_actionClose_triggered()
 {
@@ -149,20 +195,11 @@ void MainWindow::on_actionClose_triggered()
 }
 
 
-void MainWindow::on_pushButton_clicked()
-{
-    on_actionAdd_triggered();
-}
 
 
-void MainWindow::on_pushButton_2_clicked()
-{
-    on_actionDelete_triggered();
-}
 
 
-void MainWindow::on_pushButton_3_clicked()
-{
 
-}
+
+
 

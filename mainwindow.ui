@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>752</width>
-    <height>547</height>
+    <width>620</width>
+    <height>558</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,23 +16,23 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="1" column="1">
-     <widget class="QPushButton" name="pushButton_2">
+     <widget class="QPushButton" name="DeleteButton">
       <property name="text">
        <string>Удалить</string>
       </property>
      </widget>
     </item>
     <item row="1" column="0">
-     <widget class="QPushButton" name="pushButton">
+     <widget class="QPushButton" name="AddButton">
       <property name="text">
        <string>Добавить</string>
       </property>
      </widget>
     </item>
     <item row="1" column="2">
-     <widget class="QPushButton" name="pushButton_3">
+     <widget class="QPushButton" name="ReturnButton">
       <property name="text">
-       <string>Удалить все</string>
+       <string>Возврат данных</string>
       </property>
      </widget>
     </item>
@@ -46,7 +46,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>752</width>
+     <width>620</width>
      <height>21</height>
     </rect>
    </property>
@@ -66,6 +66,7 @@
     </property>
     <addaction name="actionAdd"/>
     <addaction name="actionDelete"/>
+    <addaction name="actionReturn"/>
    </widget>
    <addaction name="menuPhone_book"/>
    <addaction name="menuAction"/>
@@ -94,6 +95,11 @@
   <action name="actionClose">
    <property name="text">
     <string>Close</string>
+   </property>
+  </action>
+  <action name="actionReturn">
+   <property name="text">
+    <string>Return</string>
    </property>
   </action>
  </widget>

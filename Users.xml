@@ -1,0 +1,72 @@
+<users>
+ <user id="1">
+  <fio>Aleksandrovna Anastasiya Ivanovna</fio>
+  <email>Any123@gmail.com</email>
+  <number>88800553535</number>
+  <bday>12.02.1992</bday>
+  <day>25.06.2021</day>
+ </user>
+ <user id="2">
+  <fio>Musk Elon Reeve </fio>
+  <email>musk1994@mail.ru</email>
+  <number>89128732329</number>
+  <bday>18.02.1994</bday>
+  <day>25.06.2021</day>
+ </user>
+ <user id="3">
+  <fio>Esenen Sergey Aleksandrovich</fio>
+  <email>poem_ya@gmai.com</email>
+  <number>89030032332</number>
+  <bday>4.03.2001</bday>
+  <day>25.06.2021</day>
+ </user>
+ <user id="4">
+  <fio>Hetfild James Wotkers</fio>
+  <email>james122111@gmail.com</email>
+  <number>89223458765</number>
+  <bday>12.06.1966</bday>
+  <day>25.06.2021</day>
+ </user>
+ <user id="5">
+  <fio>Cury Mary Soldakovskaya</fio>
+  <email>rad@mail.com</email>
+  <number>89998763465</number>
+  <bday>7.11.1976</bday>
+  <day>25.06.2021</day>
+ </user>
+ <user id="6">
+  <fio>Todd Govard Robertson </fio>
+  <email>sky2015@gmail.com</email>
+  <number>89138103437</number>
+  <bday>25.05.2010</bday>
+  <day>25.06.2021</day>
+ </user>
+ <user id="7">
+  <fio>Li Sheldon Kuper</fio>
+  <email>bazinga@gmail.com</email>
+  <number>891397652312</number>
+  <bday>13.01.1977</bday>
+  <day>25.06.2021</day>
+ </user>
+ <user id="8">
+  <fio>Grirorevna Vera Pavlovna</fio>
+  <email>vera@mail.com</email>
+  <number>89113456768</number>
+  <bday>9.12.1956</bday>
+  <day>25.06.2021</day>
+ </user>
+ <user id="9">
+  <fio>Persson Mark Abid</fio>
+  <email>mark88@gmail.com</email>
+  <number>8977654345</number>
+  <bday>17.09.2011</bday>
+  <day>25.06.2021</day>
+ </user>
+ <user id="10">
+  <fio>Stephen William Worrn</fio>
+  <email>will@gmail.com</email>
+  <number>89821833337</number>
+  <bday>8.01.1947</bday>
+  <day>25.06.2021</day>
+ </user>
+</users>

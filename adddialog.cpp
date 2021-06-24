@@ -25,7 +25,6 @@ void AddDialog::on_pushButton_clicked()
     cUser.setEmail(ui->EmailLineEdit->text());
     cUser.setNumber(ui->NumberLineEdit->text());
     cUser.setBday(ui->BdayLineEdit->text());
-    cUser.setDay(ui->DayLineEdit->text());
     accept();
 }
 

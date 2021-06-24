@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QFile>
 #include "user.h"
 
 QT_BEGIN_NAMESPACE
@@ -31,11 +32,13 @@ private slots:
 
     void on_actionClose_triggered();
 
-    void on_pushButton_clicked();
+    void on_actionReturn_triggered();
 
-    void on_pushButton_2_clicked();
+    void on_AddButton_clicked();
 
-    void on_pushButton_3_clicked();
+    void on_DeleteButton_clicked();
+
+    void on_ReturnButton_clicked();
 
 private:
     enum
@@ -48,6 +51,8 @@ private:
         DAY
     };
     void addUser(const User &user);
+    void openFile(QFile *file);
+    QString sLastOpenProdject;
     Ui::MainWindow *ui;
 
 
