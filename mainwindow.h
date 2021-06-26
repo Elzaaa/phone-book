@@ -3,6 +3,9 @@
 
 #include <QMainWindow>
 #include <QFile>
+#include <QTableWidget>
+#include <QPushButton>
+#include "datamodel.h"
 #include "user.h"
 
 QT_BEGIN_NAMESPACE
@@ -14,6 +17,12 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
+    QTableWidget *m_table;
+    QPushButton *m_btnAdd;
+    QPushButton *m_btnDelete;
+    QPushButton *m_btnReturn;
+
+    DataModel *m_model;
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();

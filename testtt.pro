@@ -12,12 +12,14 @@ CONFIG += c++11
 
 SOURCES += \
     adddialog.cpp \
+    datamodel.cpp \
     main.cpp \
     mainwindow.cpp \
     user.cpp
 
 HEADERS += \
     adddialog.h \
+    datamodel.h \
     mainwindow.h \
     user.h
 

@@ -1,25 +1,26 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "adddialog.h"
+#include "datamodel.h"
 #include <QFile>
 #include <QXmlStreamWriter>
 #include <QXmlStreamReader>
 #include <QFileDialog>
 #include <QTableWidgetItem>
 #include <iostream>
-#include "adddialog.h"
 #include <QDomDocument>
 #include <QDomElement>
 #include <QTextStream>
 #include <QMessageBox>
+#include <QTableView>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
+    m_model = new DataModel(this); 
     ui->setupUi(this);
-    QStringList titles { "ID", "ФИО", "Email", "Телефон", "День рождения", "День внесения" };
-    ui->tableWidget->setColumnCount(titles.size());
-    ui->tableWidget->setHorizontalHeaderLabels(titles);
+    ui->tableView->setModel(m_model);
 }
 
 MainWindow::~MainWindow()
@@ -30,6 +31,7 @@ MainWindow::~MainWindow()
 //тригеры действий на панели управления: добавления, удаления и возврата к начальному состоянию записной книжки
 void MainWindow::on_actionAdd_triggered()
 {
+
     AddDialog d(this);
     if(d.exec()== QDialog::Rejected)
     {
@@ -38,12 +40,20 @@ void MainWindow::on_actionAdd_triggered()
     auto user = d.getUser();
     auto date = QDateTime::currentDateTime().date();
     user.setDay(QString("%1.%2.%3").arg(date.day(), 2, 10, QLatin1Char('0')).arg(date.month(), 2, 10, QLatin1Char('0')).arg(date.year(), 4, 10, QLatin1Char('0')));
-    addUser(user);
+    m_model->AddUser(user);
 }
 
 void MainWindow::on_actionDelete_triggered()
 {
-    ui->tableWidget->removeRow(ui->tableWidget->currentRow());
+   //берем выбранную строку и удаляем ее
+    auto selectionModel = ui->tableView->selectionModel();
+    //проверка выделения
+    if(selectionModel->hasSelection())
+    {
+        auto selectedRow = selectionModel->currentIndex();
+        m_model->removeRow(selectedRow.row());
+    }
+
 }
 
 void MainWindow::on_actionReturn_triggered()
@@ -79,17 +89,7 @@ void MainWindow::on_ReturnButton_clicked()
 }
 
 //добавление пользователя в телефонную книгу
-void MainWindow::addUser(const User &user)
-{
-    const int row = ui->tableWidget->rowCount();
-    ui->tableWidget->insertRow(row);
-    ui->tableWidget->setItem(row, ID, new QTableWidgetItem(user.getId()));
-    ui->tableWidget->setItem(row, FIO, new QTableWidgetItem(user.getFIO()));
-    ui->tableWidget->setItem(row, EMAIL, new QTableWidgetItem(user.getEmail()));
-    ui->tableWidget->setItem(row, NUMBER, new QTableWidgetItem(user.getNumber()));
-    ui->tableWidget->setItem(row, BDAY, new QTableWidgetItem(user.getBday()));
-    ui->tableWidget->setItem(row, DAY, new QTableWidgetItem(user.getDay()));
-}
+
 
 //сохранение пользователей из таблицы в xml файл
 void MainWindow::on_actionSave_as_triggered()
@@ -98,16 +98,11 @@ void MainWindow::on_actionSave_as_triggered()
     QDomDocument doc;
     auto root = doc.createElement("users");
     doc.appendChild(root);
-    const int rowCount = ui->tableWidget->rowCount();
 
-    for (int ix = 0; ix < rowCount; ix++)
+
+    //запрашиваем у модели юзеров и сохраняем в  xml
+    for (const User &user:m_model->GetUsers())
     {
-        User user( ui->tableWidget->item(ix, ID)->text(),
-                ui->tableWidget->item(ix, FIO)->text(),
-                ui->tableWidget->item(ix, EMAIL)->text(),
-                ui->tableWidget->item(ix, NUMBER)->text(),
-                ui->tableWidget->item(ix, BDAY)->text(),
-                ui->tableWidget->item(ix, DAY)->text());
         auto eUser = doc.createElement("user");
         eUser.setAttribute("id",user.getId());
 
@@ -147,7 +142,7 @@ void MainWindow::on_actionSave_as_triggered()
 //Открытие данных о пользователях в xml
 void MainWindow::openFile(QFile *file)
 {
-    ui->tableWidget->setRowCount( 0);
+    m_model->setRowCount(0);
     QDomDocument doc;
     doc.setContent(file);
     file->close();
@@ -162,9 +157,8 @@ void MainWindow::openFile(QFile *file)
         auto number = ix.firstChild().nextSibling().nextSibling().toElement().text();
         auto bday = ix.firstChild().nextSibling().nextSibling().nextSibling().toElement().text();
         auto day = ix.firstChild().nextSibling().nextSibling().nextSibling().nextSibling().toElement().text();     
-        addUser(User(id, fio, email, number, bday, day));
+        m_model->AddUser(User(id, fio, email, number, bday, day));
         ix = ix.nextSibling().toElement();
-
     }
 }
 
